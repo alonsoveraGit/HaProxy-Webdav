@@ -1,0 +1,44 @@
+version: "3"
+
+volumes:
+  webdav-data:
+
+services:
+
+  haproxy:
+    image: haproxy
+    volumes:
+      - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg # ruta del archivo de configuración de haproxy
+    links:
+      - webdav1
+      - webdav2
+    ports:
+      - "8090:80"
+
+
+  webdav1:
+    image: bytemark/webdav
+    hostname: webdav1
+    restart: always
+    environment:
+      AUTH_TYPE: Digest
+      USERNAME: frodo
+      PASSWORD: bolson
+
+    volumes:
+      - webdav-data:/var/lib/dav
+
+  webdav2:
+    image: bytemark/webdav
+    restart: always
+    hostname: webdav2
+    environment:
+      AUTH_TYPE: Digest
+      USERNAME: frodo
+      PASSWORD: bolson
+    volumes:
+      - webdav-data:/var/lib/dav
+
+
+
+
